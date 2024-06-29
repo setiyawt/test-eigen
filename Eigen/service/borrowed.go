@@ -2,17 +2,19 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"myproject/model"
 	"myproject/repository"
+	"time"
 )
 
 type BorrowService interface {
 	FetchAll() ([]model.Borrowed, error)
-	GetAllMembersWithBorrowedCount() ([]model.User, error)
 	FetchByID(id int) (*model.Borrowed, error)
 	Store(b *model.Borrowed) error
 	Update(id int, b *model.Borrowed) error
 	Delete(id int) error
+	ReturnBook(codeBook string, codeMember string, returnDate time.Time) error
 }
 
 type borrowService struct {
@@ -39,15 +41,6 @@ func (b *borrowService) FetchByID(id int) (*model.Borrowed, error) {
 
 	return borrow, nil
 
-}
-
-func (s *borrowService) GetAllMembersWithBorrowedCount() ([]model.User, error) {
-	borrowed, err := s.borrowRepository.GetAllMembersWithBorrowedCount()
-	if err != nil {
-		return nil, err
-	}
-
-	return borrowed, nil
 }
 
 func (b *borrowService) Store(borrow *model.Borrowed) error {
@@ -115,6 +108,16 @@ func (b *borrowService) Delete(id int) error {
 	err := b.borrowRepository.Delete(id)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (b *borrowService) ReturnBook(codeBook string, codeMember string, returnDate time.Time) error {
+
+	err := b.borrowRepository.ReturnBook(codeBook, codeMember, returnDate)
+	if err != nil {
+		return fmt.Errorf("failed to return book: %w", err)
 	}
 
 	return nil

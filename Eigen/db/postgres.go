@@ -40,12 +40,12 @@ func SQLExecute(db *sql.DB) error {
 		return err
 	}
 
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS books (id SERIAL PRIMARY KEY, code VARCHAR(6), title VARCHAR(255), author VARCHAR(255), Stock INT, Status VARCHAR(10))")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS books (id SERIAL PRIMARY KEY, code VARCHAR(6), title VARCHAR(255), author VARCHAR(255), Stock INT)")
 	if err != nil {
 		return err
 	}
 
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS borrowed (id SERIAL PRIMARY KEY, code_book VARCHAR(5), code_member VARCHAR(4), borrowedDate timestamp default NULL, returnedDate timestamp default NULL, Status VARCHAR(10), onTime INT, quantity INT)")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS borrowed (id SERIAL PRIMARY KEY, code_book VARCHAR(5), code_member VARCHAR(4), borrowedDate timestamp default NULL, returnedDate timestamp default NULL, Status VARCHAR(10), late INT, quantity INT)")
 	if err != nil {
 		return err
 	}

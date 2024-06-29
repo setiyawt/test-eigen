@@ -11,6 +11,7 @@ type UserRepository interface {
 	CheckAvail(user model.User) error
 	FetchByID(id int) (*model.User, error)
 	FetchAll() ([]model.User, error)
+	GetAllMembersWithBorrowedCount() ([]model.MemberBorrow, error)
 }
 
 type userRepository struct {
@@ -86,4 +87,31 @@ func (s *userRepository) FetchAll() ([]model.User, error) {
 	}
 
 	return users, nil
+}
+
+func (s *userRepository) GetAllMembersWithBorrowedCount() ([]model.MemberBorrow, error) {
+	query := `
+		SELECT u.id, u.code, u.name, COUNT(b.id) AS borrow_count
+		FROM users u
+		LEFT JOIN borrowed b ON u.code = b.code_member AND b.status = 'Borrowed'
+		GROUP BY u.id, u.code, u.name
+		ORDER BY u.id
+	`
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var members []model.MemberBorrow
+	for rows.Next() {
+		var member model.MemberBorrow
+		err := rows.Scan(&member.ID, &member.Code, &member.Name, &member.BorrowCount)
+		if err != nil {
+			return nil, err
+		}
+		members = append(members, member)
+	}
+
+	return members, nil
 }

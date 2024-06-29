@@ -23,7 +23,12 @@ func NewBookRepo(db *sql.DB) *bookRepoImpl {
 
 func (b *bookRepoImpl) FetchAll() ([]model.Book, error) {
 	var books []model.Book
-	query := "SELECT id, code, title, author, stock FROM books where status ='NotBorrowed'"
+	query := `
+        SELECT b.id, b.code, b.title, b.author, b.stock
+        FROM books b
+        LEFT JOIN borrowed br ON b.code = br.code_book AND br.status = 'Borrowed'
+        WHERE br.code_book IS NULL
+    `
 	rows, err := b.db.Query(query)
 	if err != nil {
 		return nil, err

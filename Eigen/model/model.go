@@ -3,10 +3,16 @@ package model
 import "time"
 
 type User struct {
+	ID       int    `json:"id"`
+	Code     string `json:"code"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
+type MemberBorrow struct {
 	ID          int    `json:"id"`
 	Code        string `json:"code"`
 	Name        string `json:"name"`
-	Password    string `json:"password"`
 	BorrowCount int    `json:"borrow_count"`
 }
 
@@ -32,19 +38,19 @@ type Borrowed struct {
 	CodeMember   string    `json:"code_member"` //berisi code member
 	BorrowedDate time.Time `json:"borrow_date"`
 	ReturnedDate time.Time `json:"return_date"`
-	OnTime       int       `json:"on_time"`
+	Late         int       `json:"late"`
 	Quantity     int       `json:"quantity"`
 	Status       string    `json:"status"` // borrowed/Not Borrowed
 }
 
-type Pinalties struct {
+type Penalties struct {
 	ID            int       `json:"id"`
 	CodeMember    string    `json:"code_member"`
-	PinaltyType   string    `json:"pinalty_type"`
+	PenaltyType   string    `json:"pinalty_type"`
 	PenaltyAmount float32   `json:"penalty_amount"`
 	PenaltyDate   time.Time `json:"penalty_date"`
 	ResolveDate   time.Time `json:"resolve_date"`
-	PinaltyActive bool      `json:"pinalty_active"`
+	PenaltyActive bool      `json:"pinalty_active"`
 }
 
 type Return struct {

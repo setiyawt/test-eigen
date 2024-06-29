@@ -13,7 +13,7 @@ func (api *API) Auth(next http.Handler) http.Handler {
 		if err != nil {
 			if err == http.ErrNoCookie {
 				w.WriteHeader(http.StatusUnauthorized)
-				json.NewEncoder(w).Encode(model.ErrorResponse{Error: err.Error()})
+				json.NewEncoder(w).Encode(model.ErrorResponse{Error: "Please login first"})
 				return
 			}
 
@@ -30,7 +30,7 @@ func (api *API) Auth(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "nam", sessionFound.Name)
+		ctx := context.WithValue(r.Context(), "name", sessionFound.Name)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

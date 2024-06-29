@@ -11,6 +11,7 @@ type UserService interface {
 	FetchAll() ([]model.User, error)
 	CheckPassLength(pass string) bool
 	CheckPassAlphabet(pass string) bool
+	GetAllMembersWithBorrowedCount() ([]model.MemberBorrow, error)
 }
 
 type userService struct {
@@ -63,4 +64,13 @@ func (s *userService) FetchAll() ([]model.User, error) {
 	}
 
 	return users, nil
+}
+
+func (s *userService) GetAllMembersWithBorrowedCount() ([]model.MemberBorrow, error) {
+	borrowed, err := s.userRepository.GetAllMembersWithBorrowedCount()
+	if err != nil {
+		return nil, err
+	}
+
+	return borrowed, nil
 }

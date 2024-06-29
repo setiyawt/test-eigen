@@ -145,3 +145,14 @@ func (api *API) FetchAllUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(user)
 }
+
+func (api *API) GetAllMembersWithBorrowedCount(w http.ResponseWriter, r *http.Request) {
+	user, err := api.userService.GetAllMembersWithBorrowedCount()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(user)
+}
