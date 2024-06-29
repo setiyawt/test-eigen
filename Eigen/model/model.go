@@ -3,10 +3,11 @@ package model
 import "time"
 
 type User struct {
-	ID       int    `json:"id"`
-	Code     string `json:"code"`
-	Name     string `json:"name"`
-	Password string `json:"password"`
+	ID          int    `json:"id"`
+	Code        string `json:"code"`
+	Name        string `json:"name"`
+	Password    string `json:"password"`
+	BorrowCount int    `json:"borrow_count"`
 }
 
 type Session struct {
@@ -26,12 +27,24 @@ type Book struct {
 }
 
 type Borrowed struct {
-	ID         int       `json:"id"`
-	CodeBook   string    `json:"code_book"`   //berisi code buku
-	BorrowedBy int       `json:"borrowed_by"` //berisi code member
-	BorrowDate time.Time `json:"borrow_date"`
-	ReturnDate time.Time `json:"return_date"`
-	Fine       int       `json:"fine"` //denda
+	ID           int       `json:"id"`
+	CodeBook     string    `json:"code_book"`   //berisi code buku
+	CodeMember   string    `json:"code_member"` //berisi code member
+	BorrowedDate time.Time `json:"borrow_date"`
+	ReturnedDate time.Time `json:"return_date"`
+	OnTime       int       `json:"on_time"`
+	Quantity     int       `json:"quantity"`
+	Status       string    `json:"status"` // borrowed/Not Borrowed
+}
+
+type Pinalties struct {
+	ID            int       `json:"id"`
+	CodeMember    string    `json:"code_member"`
+	PinaltyType   string    `json:"pinalty_type"`
+	PenaltyAmount float32   `json:"penalty_amount"`
+	PenaltyDate   time.Time `json:"penalty_date"`
+	ResolveDate   time.Time `json:"resolve_date"`
+	PinaltyActive bool      `json:"pinalty_active"`
 }
 
 type Return struct {

@@ -8,7 +8,7 @@ import (
 type UserService interface {
 	Login(user model.User) error
 	Register(user model.User) error
-
+	FetchAll() ([]model.User, error)
 	CheckPassLength(pass string) bool
 	CheckPassAlphabet(pass string) bool
 }
@@ -54,4 +54,13 @@ func (s *userService) CheckPassAlphabet(pass string) bool {
 		}
 	}
 	return true
+}
+
+func (s *userService) FetchAll() ([]model.User, error) {
+	users, err := s.userRepository.FetchAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

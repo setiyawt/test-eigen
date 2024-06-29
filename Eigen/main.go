@@ -33,11 +33,13 @@ func main() {
 	userRepo := repo.NewUserRepo(dbConn)
 	sessionRepo := repo.NewSessionRepo(dbConn)
 	bookRepo := repo.NewBookRepo(dbConn)
+	borrowRepo := repo.NewBorrowRepo(dbConn)
 
 	userService := service.NewUserService(userRepo)
 	sessionService := service.NewSessionService(sessionRepo)
 	bookService := service.NewBookService(bookRepo)
+	borrowService := service.NewBorrowService(borrowRepo)
 
-	mainAPI := api.NewAPI(userService, sessionService, bookService)
+	mainAPI := api.NewAPI(userService, sessionService, bookService, borrowService)
 	mainAPI.Start()
 }

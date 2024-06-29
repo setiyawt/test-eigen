@@ -10,6 +10,7 @@ type UserRepository interface {
 	Add(user model.User) error
 	CheckAvail(user model.User) error
 	FetchByID(id int) (*model.User, error)
+	FetchAll() ([]model.User, error)
 }
 
 type userRepository struct {
@@ -60,4 +61,29 @@ func (u *userRepository) FetchByID(id int) (*model.User, error) {
 	}
 
 	return &user, nil
+}
+
+func (s *userRepository) FetchAll() ([]model.User, error) {
+	var users []model.User
+	query := "SELECT id, code, name FROM users"
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user model.User
+		err := rows.Scan(&user.ID, &user.Code, &user.Name)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

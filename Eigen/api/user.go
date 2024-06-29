@@ -134,3 +134,14 @@ func (api *API) Logout(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(model.SuccessResponse{Message: "Logout Success"})
 }
+
+func (api *API) FetchAllUser(w http.ResponseWriter, r *http.Request) {
+	user, err := api.userService.FetchAll()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(user)
+}

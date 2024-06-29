@@ -45,7 +45,12 @@ func SQLExecute(db *sql.DB) error {
 		return err
 	}
 
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS borrowed (id SERIAL PRIMARY KEY, code_book VARCHAR(5), code_member VARCHAR(4), borrowedDate timestamp default NULL, returnedDate timestamp default NULL, fine INT)")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS borrowed (id SERIAL PRIMARY KEY, code_book VARCHAR(5), code_member VARCHAR(4), borrowedDate timestamp default NULL, returnedDate timestamp default NULL, Status VARCHAR(10), onTime INT, quantity INT)")
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS penalties (id SERIAL PRIMARY KEY, code_member VARCHAR(4), penalty_type VARCHAR(50), penalty_amount DECIMAL(10, 2), penalty_active BOOLEAN, penalty_date TIMESTAMP, resolved_date TIMESTAMP)")
 	if err != nil {
 		return err
 	}
