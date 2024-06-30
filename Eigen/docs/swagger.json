@@ -1,7 +1,15 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This is a sample API for managing a library.",
+        "title": "Library Management API",
+        "contact": {},
+        "version": "1.0"
     },
+    "host": "localhost:1323",
+    "basePath": "/",
     "paths": {}
 }

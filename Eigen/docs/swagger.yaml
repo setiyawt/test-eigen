@@ -1,4 +1,11 @@
+basePath: /
+host: localhost:1323
 info:
   contact: {}
+  description: This is a sample API for managing a library.
+  title: Library Management API
+  version: "1.0"
 paths: {}
+schemes:
+- http
 swagger: "2.0"
