@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
+
 	"myproject/model"
 	"time"
 )
@@ -19,7 +19,7 @@ type BorrowRepository interface {
 	IsBookExists(codeBook string) (bool, error)
 	IsMemberExists(codeMember string) (bool, error)
 	isMemberLate(codeMember string) error
-	ReturnBook(codeBook string, codeMember string, returnDate time.Time) error
+	FetchAllReturnBook(codeMember string) ([]model.Borrowed, error)
 }
 
 type borrowRepoImpl struct {
@@ -133,34 +133,6 @@ func (b *borrowRepoImpl) IsBookCurrentlyBorrowed(codeBook string) (bool, error) 
 	return count > 0, nil
 }
 
-func (b *borrowRepoImpl) ReturnBook(codeBook string, codeMember string, returnDate time.Time) error {
-	var borrowID int
-	query := `
-        SELECT id
-        FROM borrowed
-        WHERE code_book = $1 AND code_member = $2 AND status = 'Borrowed'
-    `
-	err := b.db.QueryRow(query, codeBook, codeMember).Scan(&borrowID)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return fmt.Errorf("No borrowed record found for this book and member")
-		}
-		return err
-	}
-
-	query = `
-        UPDATE borrowed
-        SET status = 'Returned', returned_date = $1
-        WHERE id = $2
-    `
-	_, err = b.db.Exec(query, returnDate, borrowID)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (b *borrowRepoImpl) IsMemberPenalized(codeMember string) (bool, error) {
 	query := `
 		SELECT COUNT(*)
@@ -239,4 +211,44 @@ func (b *borrowRepoImpl) Delete(id int) error {
 		return err
 	}
 	return nil
+}
+
+func (b *borrowRepoImpl) FetchAllReturnBook(codeMember string) ([]model.Borrowed, error) {
+	var borrowed []model.Borrowed
+
+	query := `
+        SELECT id, code_book, code_member, borroweddate, returneddate, status, late, quantity 
+        FROM borrowed 
+        WHERE code_member = $1 AND status = 'Borrowed'
+    `
+
+	rows, err := b.db.Query(query, codeMember)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var borrow model.Borrowed
+		err := rows.Scan(
+			&borrow.ID,
+			&borrow.CodeBook,
+			&borrow.CodeMember,
+			&borrow.BorrowedDate,
+			&borrow.ReturnedDate,
+			&borrow.Status,
+			&borrow.Late,
+			&borrow.Quantity,
+		)
+		if err != nil {
+			return nil, err
+		}
+		borrowed = append(borrowed, borrow)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return borrowed, nil
 }

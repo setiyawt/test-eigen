@@ -2,10 +2,8 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"myproject/model"
 	"myproject/repository"
-	"time"
 )
 
 type BorrowService interface {
@@ -14,7 +12,7 @@ type BorrowService interface {
 	Store(b *model.Borrowed) error
 	Update(id int, b *model.Borrowed) error
 	Delete(id int) error
-	ReturnBook(codeBook string, codeMember string, returnDate time.Time) error
+	FetchAllReturnBook(codeMember string) ([]model.Borrowed, error)
 }
 
 type borrowService struct {
@@ -68,7 +66,6 @@ func (b *borrowService) Store(borrow *model.Borrowed) error {
 		return errors.New("member is currently penalized and cannot borrow books")
 	}
 
-	// Check if the member is already borrowing 2 books
 	borrowCount, err := b.borrowRepository.GetBorrowedCountByMember(borrow.CodeMember)
 	if err != nil {
 		return err
@@ -77,7 +74,6 @@ func (b *borrowService) Store(borrow *model.Borrowed) error {
 		return errors.New("member cannot borrow more than 2 books at the same time")
 	}
 
-	// Check if the book is currently borrowed
 	isBookBorrowed, err := b.borrowRepository.IsBookCurrentlyBorrowed(borrow.CodeBook)
 	if err != nil {
 		return err
@@ -113,12 +109,11 @@ func (b *borrowService) Delete(id int) error {
 	return nil
 }
 
-func (b *borrowService) ReturnBook(codeBook string, codeMember string, returnDate time.Time) error {
-
-	err := b.borrowRepository.ReturnBook(codeBook, codeMember, returnDate)
+func (b *borrowService) FetchAllReturnBook(codeMember string) ([]model.Borrowed, error) {
+	books, err := b.borrowRepository.FetchAllReturnBook(codeMember)
 	if err != nil {
-		return fmt.Errorf("failed to return book: %w", err)
+		return nil, err
 	}
 
-	return nil
+	return books, nil
 }

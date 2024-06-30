@@ -48,7 +48,8 @@ func NewAPI(userService service.UserService, sessionService service.SessionServi
 	mux.Handle("/borrow/delete", api.Delete(http.HandlerFunc(api.DeleteBorrow)))           //menghapus buku
 
 	//RETURN BOOK
-	mux.Handle("/return-book/get-all", api.Get(api.Auth(http.HandlerFunc(api.ReturnBook)))) // mengambil buku yang dipinjam
+
+	mux.Handle("/return-book", api.Get(api.Auth(http.HandlerFunc(api.ReturnBook)))) // mengambil buku yang dipinjam //http://localhost:8080/return-book?code_member=M001
 
 	//PENALTIES
 	mux.Handle("/penalties/get-all", api.Get(api.Auth(http.HandlerFunc(api.FetchAllPenalties)))) // mengambil penalties list
@@ -56,6 +57,7 @@ func NewAPI(userService service.UserService, sessionService service.SessionServi
 	mux.Handle("/penalties/add", api.Post(api.Auth(http.HandlerFunc(api.StorePenalties))))       //menambahkan penalties
 	mux.Handle("/penalties/delete", api.Delete(http.HandlerFunc(api.DeletePenalties)))           //menghapus penalties
 	mux.Handle("/penalties/update", api.Put(api.Auth(http.HandlerFunc(api.UpdatePenalties))))    //mengupdate penalties
+
 	return api
 }
 

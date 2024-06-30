@@ -5,7 +5,6 @@ import (
 	"myproject/model"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 func (api *API) FetchAllBorrow(w http.ResponseWriter, r *http.Request) {
@@ -105,21 +104,13 @@ func (api *API) DeleteBorrow(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) ReturnBook(w http.ResponseWriter, r *http.Request) {
-	codeBook := r.URL.Query().Get("code_book")
 	codeMember := r.URL.Query().Get("code_member")
-	returnDate := time.Now()
 
-	if codeBook == "" || codeMember == "" {
-		http.Error(w, "Missing book or member code", http.StatusBadRequest)
-		return
-	}
-
-	err := api.borrowService.ReturnBook(codeBook, codeMember, returnDate)
+	borrowedBooks, err := api.borrowService.FetchAllReturnBook(codeMember)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Book returned successfully"))
+	json.NewEncoder(w).Encode(borrowedBooks)
 }

@@ -40,14 +40,14 @@ type Borrowed struct {
 	ReturnedDate time.Time `json:"return_date"`
 	Late         int       `json:"late"`
 	Quantity     int       `json:"quantity"`
-	Status       string    `json:"status"` // borrowed/Not Borrowed
+	Status       string    `json:"status"` // Borrowed/NotBorrowed
 }
 
 type Penalties struct {
 	ID            int       `json:"id"`
 	CodeMember    string    `json:"code_member"`
 	PenaltyType   string    `json:"pinalty_type"`
-	PenaltyAmount float32   `json:"penalty_amount"`
+	PenaltyAmount float64   `json:"penalty_amount"`
 	PenaltyDate   time.Time `json:"penalty_date"`
 	ResolveDate   time.Time `json:"resolve_date"`
 	PenaltyActive bool      `json:"pinalty_active"`
